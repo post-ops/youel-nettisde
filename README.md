@@ -1,18 +1,19 @@
-# Molat Barbershop — booking-nettside
+# Molat Frisør — booking-nettside
 
-Profesjonell booking-nettside for **Molat Barbershop** (herrefrisør).
-Kunder velger ledige tider i sanntid; bookingen synkroniseres til frisørens
-Google Kalender og trigger e-postvarsling både til frisøren og kunden.
-Eget admin-panel for å blokkere dager (sykdom/ferie) og avbestille bookinger.
+Profesjonell booking-nettside for **Molat Frisør** (herrefrisør).
+Kunder velger ledige tider i sanntid; bestillingen synkroniseres til frisørens
+Google Kalender og trigger e-postvarsling til både frisøren og kunden.
+Eget admin-panel + live in-place editing av tekst og bilder direkte på siden.
 
 ## Funksjoner
 
-- 🗓️  **Sanntidskalender** med 30-min slots, åpningstider per ukedag.
-- 📲 **Booking** med navn, telefon og e-post (norsk +47-validering).
-- 🔄 **Google Kalender-sync** via service account.
-- 📧 **E-postvarsling** (Resend) til frisør og kunde.
-- 🔐 **Admin-panel** — passordbeskyttet, blokker dager/tider, avbestill.
-- 🎨 Mørk, elegant design (navy + gull) bygget med Tailwind v4 + shadcn-style.
+- 🗓️ **Sanntidskalender** med 30-min slots, åpningstider per ukedag
+- 📲 **Bestilling** med navn, telefon, e-post (norsk +47-validering), 4 tjenester
+- 🔄 **Google Kalender-sync** via service account
+- 📧 **E-postvarsling** (Resend) til frisør og kunde
+- 🔐 **Admin-panel** — passordbeskyttet, blokker dager/tider, avbestill
+- ✏️ **Live editering** — klikk-å-rediger tekst og dra-og-slipp bilder rett på siden
+- 🎨 Mørk, elegant design (navy + gull) bygget med Tailwind v4 + Radix
 
 ## Tech-stack
 
@@ -20,39 +21,92 @@ Eget admin-panel for å blokkere dager (sykdom/ferie) og avbestille bookinger.
 |------------|-----------------------------------------------|
 | Framework  | Next.js 16 (App Router, Turbopack)            |
 | UI         | React 19, Tailwind v4, Radix Primitives       |
-| Database   | Prisma 6 + SQLite (dev) / PostgreSQL (prod)   |
+| Database   | Prisma 6 + PostgreSQL                         |
 | Auth       | Auth.js v5 (Credentials)                      |
+| Bilde-lagring | Vercel Blob (prod) / lokal disk (dev)      |
 | Kalender   | googleapis (service account)                  |
 | E-post     | Resend                                        |
 | Tester     | Vitest                                        |
 
-## Hurtigstart (lokalt)
+---
+
+## Lokal utvikling
+
+Du trenger en PostgreSQL-database. Letteste:
+
+- **Neon** (gratis): https://neon.tech → opprett DB → kopier connection string
+- **Supabase** (gratis): https://supabase.com
+- **Docker**: `docker run -d --name molat-pg -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=molat postgres:16`
 
 ```bash
 # 1. Installer
 npm install
 
-# 2. Lag DB
+# 2. Sett env-variabler
+cp .env.example .env
+# Rediger .env og sett DATABASE_URL + AUTH_SECRET
+
+# 3. Lag DB-skjema
 npm run db:push
 
-# 3. Seed admin-bruker
+# 4. Seed admin-bruker
 npm run seed:admin -- molat@example.no <passord>
-
-# 4. Sett env-variabler (kopier .env.example til .env og fyll inn)
-cp .env.example .env
 
 # 5. Start dev-server
 npm run dev
 ```
 
-Åpne `http://localhost:3000`.
+Åpne `http://localhost:3000`. Login: `/admin/login`.
 
-| Side                   | URL                          |
-|------------------------|------------------------------|
-| Forside                | `/`                          |
-| Booking                | `/booking`                   |
-| Admin (innlogging)     | `/admin/login`               |
-| Admin dashboard        | `/admin`                     |
+---
+
+## Deploy til Vercel (anbefalt)
+
+### 1. Push til GitHub
+```bash
+git push -u origin main
+```
+
+### 2. Importer i Vercel
+- Gå til https://vercel.com/new → velg GitHub-repoet → klikk **Deploy** (det vil feile første gang fordi DATABASE_URL mangler — det fikser vi i steg 3).
+
+### 3. Sett opp database (Vercel Postgres / Neon)
+- I Vercel-prosjektet: **Storage** → **Create Database** → velg *Neon* (eller *Marketplace → Postgres*).
+- Velg samme region som Vercel-prosjektet.
+- `DATABASE_URL` blir auto-injectet i prosjektets env-vars.
+
+### 4. Sett opp bilde-lagring (Vercel Blob)
+- I Vercel-prosjektet: **Storage** → **Create Database** → velg **Blob**.
+- `BLOB_READ_WRITE_TOKEN` blir auto-injectet.
+
+### 5. Sett resterende env-vars
+I **Settings → Environment Variables**:
+
+| Navn | Verdi |
+|---|---|
+| `AUTH_SECRET` | Generer med `openssl rand -base64 32` |
+| `AUTH_URL` | `https://din-vercel-url.vercel.app` (eller eget domene) |
+| `RESEND_API_KEY` | Fra resend.com (valgfritt — appen virker uten) |
+| `OWNER_EMAIL` | Frisørens e-post |
+| `FROM_EMAIL` | `Molat Frisør <booking@dittdomene.no>` |
+| `GOOGLE_CALENDAR_ID` | Frisørens kalender-ID (valgfritt) |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Service account-epost (valgfritt) |
+| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Hele private key (valgfritt) |
+
+### 6. Redeploy
+- **Deployments** → siste deploy → **Redeploy**
+- Build kjører `prisma db push` automatisk og lager skjemaet i Postgres.
+
+### 7. Seed admin-bruker (engangs, fra lokal maskin)
+```bash
+DATABASE_URL="<din-vercel-postgres-url>" npm run seed:admin -- frisor@molat.no <passord>
+```
+Connection-stringen henter du fra Vercel Storage → Postgres → `.env.local` tab.
+
+### 8. Domene
+**Settings → Domains** → legg til ditt eget domene → følg DNS-instruksjonene.
+
+---
 
 ## Tester
 
@@ -64,120 +118,50 @@ npm run test:watch  # watch-modus
 Slot-generatoren har testdekning for åpningstider, helger, blokker, lead-time
 og overlappende bookinger (`src/lib/slots.test.ts`).
 
+---
+
 ## Konfigurasjon
 
-Alt forretningslogisk — åpningstider, slot-størrelse, pris — bor i
+Alt forretningslogisk — åpningstider, slot-størrelse, tjenester/priser — bor i
 `src/lib/config.ts`. Endre der for å endre oppførsel.
 
-### .env-variabler
+### Tjenester (priser)
 
-| Navn                                  | Beskrivelse                                            |
-|---------------------------------------|--------------------------------------------------------|
-| `DATABASE_URL`                        | SQLite lokalt (`file:./dev.db`) / Postgres i prod      |
-| `AUTH_SECRET`                         | NextAuth secret (kjør `openssl rand -base64 32`)       |
-| `AUTH_URL`                            | Public URL                                             |
-| `GOOGLE_CALENDAR_ID`                  | Frisørens kalender-ID                                  |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL`        | Service account e-post                                 |
-| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`  | Hele private key (med `\n` eller raw)                  |
-| `RESEND_API_KEY`                      | Resend API-nøkkel                                      |
-| `OWNER_EMAIL`                         | Mottaker for booking-varsler                           |
-| `FROM_EMAIL`                          | Avsenderadresse                                        |
-| `TIMEZONE`                            | Europe/Oslo (default)                                  |
+Defineres i `SERVICES`-arrayet i `src/lib/config.ts`. Endre navn, varighet eller
+pris — booking-flyten tilpasses automatisk.
 
-Hvis Google Calendar eller Resend mangler env, **logges en advarsel og funksjonen hopper over uten å feile bookingen** — nettsiden virker likevel lokalt.
+### Åpningstider
 
-### Google Calendar — oppsett
+`OPENING_HOURS` i `src/lib/config.ts`. Per ukedag: `{open, close}` eller `null`
+for stengt.
 
-1. Opprett et prosjekt i Google Cloud Console.
-2. Aktiver Google Calendar API.
-3. Opprett en *service account* og last ned JSON-nøkkel.
-4. Sett `GOOGLE_SERVICE_ACCOUNT_EMAIL` og `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY`
-   fra JSON-filen.
-5. I frisørens Google Kalender → *Settings → Share with specific people* →
-   legg til service-account-eposten med rettighet **"Make changes to events"**.
-6. Sett `GOOGLE_CALENDAR_ID` til kalenderens ID (f.eks. e-postadresse til
-   eieren, eller en custom kalender-ID).
-
-### Resend — oppsett
-
-1. Opprett konto på [resend.com](https://resend.com).
-2. Verifiser domenet og lag en API-nøkkel.
-3. Under utvikling kan du bruke `onboarding@resend.dev` som FROM_EMAIL og
-   teste til din egen e-post.
+---
 
 ## Admin-panel
 
-- Logg inn med admin-eposten du seedet (steg 3).
-- **Oversikt**: dagens og kommende bookinger, aktive blokker.
-- **Bookinger**: tabell, avbestill (sender e-post + sletter Google-event).
-- **Blokker**: hel dag eller tidsrom (sykdom, ferie, lunsj).
+- `/admin/login` — innlogging
+- `/admin` — oversikt (dagens bestillinger, kommende uke, blokker)
+- `/admin/bookings` — alle bestillinger, avbestill
+- `/admin/blocks` — blokker dag/tidsrom (sykdom, ferie, lunsj)
+- `/admin/content` — rediger tekst på alle sider (også via inline-editing)
+- `/admin/images` — bytt galleri-bilder
 
-For å lage en ny admin: kjør `npm run seed:admin -- <epost> <passord>` igjen
-(samme epost = passordet oppdateres).
+### Live in-place editing
 
-## Deploy til Google Cloud (Cloud Run + Cloud SQL)
+Når innlogget admin er på forsiden eller booking-siden, vises en flytende
+verktøylinje nederst. Klikk **"Rediger nettsiden"** → klikk på tekst for å
+endre, hold over bilder for å bytte dem ut. Endringer lagres rett til DB.
 
-> Lokalt bruker vi SQLite; for produksjon anbefales **Cloud SQL (PostgreSQL)**.
-
-### 1. Bytt til PostgreSQL i `prisma/schema.prisma`
-
-```diff
-- provider = "sqlite"
-+ provider = "postgresql"
-```
-
-### 2. Opprett Cloud SQL-instans (PostgreSQL)
-
-```bash
-gcloud sql instances create molat-db \
-  --database-version=POSTGRES_16 --tier=db-f1-micro --region=europe-north1
-gcloud sql databases create molat --instance=molat-db
-gcloud sql users create molat-app --instance=molat-db --password=...
-```
-
-### 3. Bygg og deploy til Cloud Run
-
-```bash
-# Build & push
-gcloud builds submit --tag gcr.io/$PROJECT/molat-booking
-
-# Deploy
-gcloud run deploy molat-booking \
-  --image gcr.io/$PROJECT/molat-booking \
-  --region europe-north1 \
-  --allow-unauthenticated \
-  --add-cloudsql-instances $PROJECT:europe-north1:molat-db \
-  --set-env-vars "DATABASE_URL=postgresql://molat-app:...@/molat?host=/cloudsql/$PROJECT:europe-north1:molat-db" \
-  --set-env-vars "AUTH_SECRET=...,AUTH_URL=https://din-domene,GOOGLE_CALENDAR_ID=...,GOOGLE_SERVICE_ACCOUNT_EMAIL=...,RESEND_API_KEY=..." \
-  --set-secrets "GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=google-pk:latest"
-```
-
-### 4. Kjør migrasjoner mot Cloud SQL
-
-```bash
-DATABASE_URL=... npx prisma migrate deploy
-DATABASE_URL=... npm run seed:admin -- frisor@molat.no <passord>
-```
-
-### 5. Domene
-
-- Map domene i Cloud Run-konsollen.
-- Oppdater DNS hos registrar med oppgitt CNAME/A-record.
-
-## Bilder
-
-- `public/logo.png` — hovedlogo (kommer fra `Gemini_Generated_Image_e7prlne7prlne7pr.png`)
-- `public/hero.jpg`, `public/gallery/*.jpg` — generert fra collage-bildet med
-  `npx tsx scripts/prepare-images.ts`. Kjør på nytt om bildene byttes.
+---
 
 ## Skript
 
 ```bash
 npm run dev               # Next.js dev-server (Turbopack)
-npm run build             # Prod-build
+npm run build             # Prisma generate + db push + Next build (Vercel)
 npm run start             # Start prod-build
 npm test                  # Vitest
-npm run db:push           # Synk DB-schema
+npm run db:push           # Synk DB-skjema
 npm run db:studio         # Prisma Studio (DB-GUI)
 npm run seed:admin        # Opprett/oppdater admin-bruker
 ```

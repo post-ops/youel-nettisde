@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "node:fs/promises";
-import path from "node:path";
 import { auth } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -35,9 +33,22 @@ export async function POST(req: Request) {
 
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
   const safeName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  // Vercel Blob i prod (BLOB_READ_WRITE_TOKEN auto-injectes på Vercel),
+  // lokal disk i dev.
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    const { put } = await import("@vercel/blob");
+    const blob = await put(`uploads/${safeName}`, ab, {
+      access: "public",
+      contentType: file.type,
+    });
+    return NextResponse.json({ url: blob.url });
+  }
+
+  const { writeFile, mkdir } = await import("node:fs/promises");
+  const path = await import("node:path");
   const dir = path.join(process.cwd(), "public", "uploads");
   await mkdir(dir, { recursive: true });
   await writeFile(path.join(dir, safeName), Buffer.from(ab));
-
   return NextResponse.json({ url: `/uploads/${safeName}` });
 }

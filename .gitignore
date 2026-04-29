@@ -40,9 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Local SQLite
+# Admin-uploaded images (lokalt; brukes Vercel Blob i prod)
+/public/uploads
+
+# Lokal Prisma artefakter
 /prisma/dev.db
 /prisma/dev.db-journal
-
-# Admin-uploaded images (lokalt; flytt til Cloud Storage i prod)
-/public/uploads

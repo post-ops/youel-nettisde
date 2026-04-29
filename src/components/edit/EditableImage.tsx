@@ -79,7 +79,7 @@ export function EditableImage({ slot, src, defaultSrc, alt, ...rest }: Props) {
         src={currentSrc}
         alt={alt}
         {...rest}
-        unoptimized={currentSrc.startsWith("/uploads/")}
+        unoptimized={currentSrc.startsWith("/uploads/") || currentSrc.includes("blob.vercel-storage.com")}
       />
 
       {enabled ? (

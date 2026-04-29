@@ -112,7 +112,7 @@ function SlotCard({
           fill
           sizes="(max-width: 640px) 100vw, 50vw"
           className="object-cover"
-          unoptimized={slot.url.startsWith("/uploads/")}
+          unoptimized={slot.url.startsWith("/uploads/") || slot.url.includes("blob.vercel-storage.com")}
         />
         {uploading ? (
           <div className="absolute inset-0 grid place-items-center bg-black/60 text-white">

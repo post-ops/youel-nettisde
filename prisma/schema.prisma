@@ -1,13 +1,14 @@
-// Molat Barbershop — booking schema
-// Local dev: SQLite (file:./dev.db). Production: bytt provider til "postgresql"
-// og pek DATABASE_URL til Cloud SQL.
+// Molat Frisør — booking schema
+// Lokalt + Vercel: PostgreSQL.
+// Anbefales: Vercel Postgres (Neon-backed) eller egen Neon/Supabase-instans.
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,8 +17,8 @@ model Booking {
   customerName  String
   customerPhone String
   customerEmail String
-  serviceId     String   @default("voksen") // refererer til SERVICES.id i config.ts
-  servicePrice  Int      @default(400)      // pris ved booking-tidspunkt (kr)
+  serviceId     String   @default("voksen")
+  servicePrice  Int      @default(400)
   startsAt      DateTime
   endsAt        DateTime
   status        String   @default("CONFIRMED") // CONFIRMED | CANCELLED
