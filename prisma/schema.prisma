@@ -1,0 +1,59 @@
+// Molat Barbershop — booking schema
+// Local dev: SQLite (file:./dev.db). Production: bytt provider til "postgresql"
+// og pek DATABASE_URL til Cloud SQL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id            String   @id @default(cuid())
+  customerName  String
+  customerPhone String
+  customerEmail String
+  serviceId     String   @default("voksen") // refererer til SERVICES.id i config.ts
+  servicePrice  Int      @default(400)      // pris ved booking-tidspunkt (kr)
+  startsAt      DateTime
+  endsAt        DateTime
+  status        String   @default("CONFIRMED") // CONFIRMED | CANCELLED
+  googleEventId String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  @@index([startsAt])
+  @@index([status])
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  startsAt  DateTime
+  endsAt    DateTime
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([startsAt])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model SiteContent {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model SiteImage {
+  slot      String   @id // f.eks. "gallery-1"
+  url       String
+  updatedAt DateTime @updatedAt
+}
