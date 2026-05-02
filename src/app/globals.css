@@ -3,14 +3,14 @@
 @import "react-day-picker/style.css";
 
 @theme inline {
-  --color-background: #0c0d12;
-  --color-surface: #15171f;
-  --color-surface-2: #1c1f29;
-  --color-foreground: #f5efe3;
-  --color-muted: #a3a39c;
-  --color-border: #2a2d39;
-  --color-accent: #c9a973;
-  --color-accent-foreground: #0c0d12;
+  --color-background: #061410;
+  --color-surface: #0c1f18;
+  --color-surface-2: #133024;
+  --color-foreground: #ecf3ec;
+  --color-muted: #8aa898;
+  --color-border: #1d3a2a;
+  --color-accent: #7cc69a;
+  --color-accent-foreground: #061410;
   --color-success: #4ad17a;
   --color-danger: #e26d7a;
 
@@ -62,7 +62,7 @@
 /* react-day-picker overrides for å matche tema */
 .rdp-root {
   --rdp-accent-color: var(--color-accent);
-  --rdp-accent-background-color: rgba(201, 169, 115, 0.15);
+  --rdp-accent-background-color: rgba(124, 198, 154, 0.15);
   --rdp-background-color: transparent;
   --rdp-day_button-height: 40px;
   --rdp-day_button-width: 40px;
@@ -72,7 +72,7 @@
   color: var(--color-foreground);
 }
 .rdp-day_button:hover:not([disabled]) {
-  background: rgba(201, 169, 115, 0.12);
+  background: rgba(124, 198, 154, 0.12);
 }
 .rdp-selected .rdp-day_button {
   background: var(--color-accent) !important;

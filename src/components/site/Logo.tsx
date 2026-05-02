@@ -7,24 +7,31 @@ type Props = {
 };
 
 const SIZE = {
-  sm: { mark: "h-8 w-8", text: "text-base" },
-  md: { mark: "h-10 w-10", text: "text-lg md:text-xl" },
-  lg: { mark: "h-14 w-14", text: "text-2xl md:text-3xl" },
+  sm: { mark: "h-9 w-9", text: "text-base" },
+  md: { mark: "h-11 w-11", text: "text-lg md:text-xl" },
+  lg: { mark: "h-16 w-16", text: "text-2xl md:text-3xl" },
 };
 
-/**
- * Ren SVG-logo for Molat Frisør. Bruker accent-fargen og serif-fonten.
- * Erstatter det fotografiske logo-bildet.
- */
 export function Logo({ className, showText = true, size = "md" }: Props) {
   const s = SIZE[size];
   return (
-    <span className={cn("inline-flex items-center gap-3", className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-3 text-[var(--color-foreground)]",
+        className,
+      )}
+    >
       <Mark className={s.mark} />
       {showText ? (
-        <span className={cn("font-serif tracking-tight leading-none", s.text)}>
+        <span
+          className={cn(
+            "font-serif tracking-[0.22em] uppercase leading-none",
+            s.text,
+          )}
+        >
           <span>Molat</span>
-          <span className="text-[var(--color-accent)]">.</span>
+          <span className="text-[var(--color-accent)] mx-1.5">·</span>
+          <span>Frisør</span>
         </span>
       ) : null}
     </span>
@@ -36,20 +43,35 @@ export function Mark({ className }: { className?: string }) {
     <svg
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn("text-[var(--color-accent)]", className)}
+      className={cn("text-current", className)}
       aria-hidden
     >
-      {/* Sirkel-bakgrunn */}
       <circle
         cx="32"
         cy="32"
-        r="30"
+        r="29.5"
         fill="none"
         stroke="currentColor"
-        strokeOpacity="0.4"
-        strokeWidth="1.2"
+        strokeOpacity="0.55"
+        strokeWidth="1.6"
       />
-      {/* Saks — to ringer + to blader */}
+      {/* Kam — bak */}
+      <g
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.95"
+      >
+        <rect x="22.5" y="14.5" width="19" height="4" rx="0.8" />
+        <line x1="25" y1="18.5" x2="25" y2="32" />
+        <line x1="29" y1="18.5" x2="29" y2="32" />
+        <line x1="32" y1="18.5" x2="32" y2="32" />
+        <line x1="35" y1="18.5" x2="35" y2="32" />
+        <line x1="39" y1="18.5" x2="39" y2="32" />
+      </g>
+      {/* Saks — foran */}
       <g
         fill="none"
         stroke="currentColor"
@@ -57,24 +79,12 @@ export function Mark({ className }: { className?: string }) {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        <circle cx="22" cy="42" r="5" />
-        <circle cx="42" cy="42" r="5" />
-        <line x1="26" y1="38" x2="46" y2="18" />
-        <line x1="38" y1="38" x2="18" y2="18" />
+        <circle cx="22" cy="44" r="4.2" />
+        <circle cx="42" cy="44" r="4.2" />
+        <line x1="25.2" y1="41" x2="45" y2="20" />
+        <line x1="38.8" y1="41" x2="19" y2="20" />
+        <circle cx="32" cy="35.5" r="1.1" fill="currentColor" stroke="none" />
       </g>
-      {/* M-monogram bak saksen */}
-      <text
-        x="32"
-        y="28"
-        textAnchor="middle"
-        fontFamily="Playfair Display, Georgia, serif"
-        fontSize="20"
-        fontWeight="600"
-        fill="currentColor"
-        opacity="0.9"
-      >
-        M
-      </text>
     </svg>
   );
 }

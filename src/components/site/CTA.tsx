@@ -26,9 +26,9 @@ export function CTA({ title, description }: Props) {
           className="absolute inset-0 -z-10 pointer-events-none"
           animate={{
             background: [
-              "radial-gradient(circle at 30% 0%, rgba(201,169,115,0.22), transparent 55%)",
-              "radial-gradient(circle at 70% 0%, rgba(201,169,115,0.22), transparent 55%)",
-              "radial-gradient(circle at 30% 0%, rgba(201,169,115,0.22), transparent 55%)",
+              "radial-gradient(circle at 30% 0%, rgba(124,198,154,0.22), transparent 55%)",
+              "radial-gradient(circle at 70% 0%, rgba(124,198,154,0.22), transparent 55%)",
+              "radial-gradient(circle at 30% 0%, rgba(124,198,154,0.22), transparent 55%)",
             ],
           }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}

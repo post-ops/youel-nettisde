@@ -54,9 +54,9 @@ export default async function RootLayout({
           theme="dark"
           toastOptions={{
             style: {
-              background: "#15171f",
-              color: "#f5efe3",
-              border: "1px solid #2a2d39",
+              background: "#0c1f18",
+              color: "#ecf3ec",
+              border: "1px solid #1d3a2a",
             },
           }}
         />

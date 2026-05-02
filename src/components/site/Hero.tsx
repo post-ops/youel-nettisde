@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { LOWEST_PRICE, SLOT_MINUTES } from "@/lib/config";
 import { formatNok } from "@/lib/utils";
 import { EditableText } from "@/components/edit/EditableText";
+import { Mark } from "@/components/site/Logo";
 
 type Props = {
   title: string;
@@ -30,20 +31,20 @@ export function Hero({ title, tagline, subtitle }: Props) {
     >
       {/* Pure CSS-bakgrunn — ingen foto */}
       <div aria-hidden className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0c14] via-[#0c0d12] to-[#0c0d12]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#04100b] via-[#061410] to-[#061410]" />
         <div
           className="absolute inset-0 opacity-[0.07]"
           style={{
             backgroundImage:
-              "radial-gradient(circle, rgba(245,239,227,0.6) 1px, transparent 1px)",
+              "radial-gradient(circle, rgba(236,243,236,0.6) 1px, transparent 1px)",
             backgroundSize: "32px 32px",
           }}
         />
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(135deg, rgba(201,169,115,1) 0 1px, transparent 1px 12px)",
+              "repeating-linear-gradient(135deg, rgba(124,198,154,1) 0 1px, transparent 1px 12px)",
           }}
         />
       </div>
@@ -53,10 +54,10 @@ export function Hero({ title, tagline, subtitle }: Props) {
         className="absolute inset-0 -z-10 pointer-events-none"
         animate={{
           background: [
-            "radial-gradient(circle at 20% 30%, rgba(201,169,115,0.18), transparent 55%)",
-            "radial-gradient(circle at 80% 60%, rgba(201,169,115,0.18), transparent 55%)",
-            "radial-gradient(circle at 30% 70%, rgba(201,169,115,0.18), transparent 55%)",
-            "radial-gradient(circle at 20% 30%, rgba(201,169,115,0.18), transparent 55%)",
+            "radial-gradient(circle at 20% 30%, rgba(124,198,154,0.18), transparent 55%)",
+            "radial-gradient(circle at 80% 60%, rgba(124,198,154,0.18), transparent 55%)",
+            "radial-gradient(circle at 30% 70%, rgba(124,198,154,0.18), transparent 55%)",
+            "radial-gradient(circle at 20% 30%, rgba(124,198,154,0.18), transparent 55%)",
           ],
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
@@ -81,6 +82,8 @@ export function Hero({ title, tagline, subtitle }: Props) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-2xl"
         >
+          <Mark className="h-20 w-20 md:h-24 md:w-24 text-[var(--color-foreground)] mb-6" />
+
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-8">
             <Scissors className="h-3.5 w-3.5" />
             Herrefrisør · Bestill på nett
