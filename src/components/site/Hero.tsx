@@ -82,7 +82,12 @@ export function Hero({ title, tagline, subtitle }: Props) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="max-w-2xl"
         >
-          <Mark className="h-20 w-20 md:h-24 md:w-24 text-[var(--color-foreground)] mb-6" />
+          <Mark
+            width={180}
+            height={235}
+            priority
+            className="h-28 w-auto md:h-36 mb-6"
+          />
 
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur px-4 py-1.5 text-xs uppercase tracking-[0.2em] text-[var(--color-accent)] mb-8">
             <Scissors className="h-3.5 w-3.5" />
