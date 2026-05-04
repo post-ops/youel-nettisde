@@ -72,7 +72,7 @@ export const SERVICES: readonly Service[] = [
     id: "klipp-skjegg",
     name: "Herreklipp m/ skjegg",
     description: "Klipp og skjeggtrim — komplett stil.",
-    durationMinutes: 30,
+    durationMinutes: 45,
     priceNok: 550,
   },
 ] as const;
@@ -107,7 +107,7 @@ export const DEFAULT_CONTENT = {
   "service.eyebrow": "Tjenester",
   "service.title": "Velg det som passer deg.",
   "service.description":
-    "Faste priser, ingen overraskelser. Alle klipp tar 30 minutter.",
+    "Faste priser, ingen overraskelser. Klipp tar 30 minutter, herreklipp m/ skjegg 45 minutter.",
   "gallery.eyebrow": "Salongen",
   "gallery.title": "Detaljer som teller.",
   "gallery.description":
